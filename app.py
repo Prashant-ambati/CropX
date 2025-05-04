@@ -21,25 +21,40 @@ app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Load the model, preprocessor, and label encoder
-try:
-    model = load_model(os.path.join(BASE_DIR, 'cropx_model.keras'))
-except Exception as e:
-    print(f"Error loading model in .keras format: {e}")
-    # Try loading with h5 format as a fallback
-    model = load_model(os.path.join(BASE_DIR, 'cropx_model.h5'))
+model = None
+preprocessor = None
+label_encoder = None
+model_results = None
 
-with open(os.path.join(BASE_DIR, 'preprocessor.pkl'), 'rb') as f:
-    preprocessor = pickle.load(f)
-    
-with open(os.path.join(BASE_DIR, 'label_encoder.pkl'), 'rb') as f:
-    label_encoder = pickle.load(f)
-    
-# Load model results for additional information
-with open(os.path.join(BASE_DIR, 'model_results.pkl'), 'rb') as f:
-    model_results = pickle.load(f)
-    
-print(f"Loaded CropX v2 model trained on {model_results.get('dataset', 'unknown dataset')}")
-print(f"Model accuracy: {model_results.get('accuracy', 0):.4f}")
+try:
+    # Try loading .keras format first
+    model_path = os.path.join(BASE_DIR, 'cropx_model.keras')
+    if os.path.exists(model_path):
+        model = load_model(model_path)
+    else:
+        # Try loading .h5 format
+        model_path = os.path.join(BASE_DIR, 'cropx_model.h5')
+        if os.path.exists(model_path):
+            model = load_model(model_path)
+        else:
+            raise FileNotFoundError("No model file found")
+
+    # Load other required files
+    with open(os.path.join(BASE_DIR, 'preprocessor.pkl'), 'rb') as f:
+        preprocessor = pickle.load(f)
+        
+    with open(os.path.join(BASE_DIR, 'label_encoder.pkl'), 'rb') as f:
+        label_encoder = pickle.load(f)
+        
+    with open(os.path.join(BASE_DIR, 'model_results.pkl'), 'rb') as f:
+        model_results = pickle.load(f)
+        
+    print(f"Loaded CropX v2 model trained on {model_results.get('dataset', 'unknown dataset')}")
+    print(f"Model accuracy: {model_results.get('accuracy', 0):.4f}")
+
+except Exception as e:
+    print(f"Error loading model files: {str(e)}")
+    raise
 
 # API keys
 WEATHER_API_KEY = os.getenv('OPENWEATHER_API_KEY', '')

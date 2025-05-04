@@ -26,6 +26,12 @@ Thumbs.db
 
 # Project specific
 *.log
+# Allow specific model files
+!cropx_model.keras
+!preprocessor.pkl
+!label_encoder.pkl
+!model_results.pkl
+# Ignore other model files
 *.pkl
 *.keras
 *.png
