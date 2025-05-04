@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: cropx
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: OPENWEATHER_API_KEY
+        sync: false
+      - key: OPENCAGE_API_KEY
+        sync: false 

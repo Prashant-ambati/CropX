@@ -14,7 +14,7 @@ load_dotenv()
 app = Flask(__name__)
 
 # Define base directory
-BASE_DIR = '/Users/prashantambati/Documents/cropx'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Load the model, preprocessor, and label encoder
 try:
