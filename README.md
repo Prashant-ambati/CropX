@@ -2,7 +2,7 @@
 
 A sophisticated deep learning crop recommendation system that provides personalized crop recommendations based on soil conditions and environmental factors.
 
-![CropX Prediction System](https://via.placeholder.com/1200x600/e8f5e9/2e7d32?text=CropX+Prediction+System)
+
 
 ## Features
 
