@@ -1,9 +1,13 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Suppress TensorFlow logging
+import tensorflow as tf
+tf.get_logger().setLevel('ERROR')  # Suppress TensorFlow warnings
+
 from flask import Flask, render_template, request, jsonify
 import pandas as pd
 import numpy as np
 import pickle
 import requests
-import os
 from tensorflow.keras.models import load_model
 from dotenv import load_dotenv
 from opencage.geocoder import OpenCageGeocode
