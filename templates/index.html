@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Crop Recommendation System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="fas fa-seedling me-2"></i>CropX</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/"><i class="fas fa-home me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about-model"><i class="fas fa-brain me-1"></i>About the Model</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#contactModal"><i class="fas fa-envelope me-1"></i>Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="site-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1><i class="fas fa-seedling me-2"></i>Smart Crop Recommendation System</h1>
+                    <p class="lead">Get personalized crop recommendations based on soil conditions and local climate data</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <!-- Location Selection Card -->
+            <div class="col-lg-6">
+                <div class="card fade-in">
+                    <div class="card-header bg-success text-white">
+                        <h4><i class="fas fa-map-marker-alt me-2"></i>Select Your Location</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="map"></div>
+                        <p class="mt-3 text-muted"><i class="fas fa-info-circle me-2"></i>Click on the map to select your location or use the search box</p>
+                        
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" id="location-search" class="form-control" placeholder="Search for a location...">
+                            <button class="btn btn-outline-secondary" type="button" id="search-button">Search</button>
+                        </div>
+                        
+                        <!-- Weather Information Section -->
+                        <div id="weather-info" class="weather-info d-none">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0"><i class="fas fa-cloud-sun me-2"></i>Weather Information</h5>
+                                <span id="weather-location" class="badge bg-primary"></span>
+                            </div>
+                            <div id="weather-details" class="row"></div>
+                        </div>
+                        
+                        <!-- Location Details Section -->
+                        <div id="location-details" class="location-details d-none">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Location Details</h5>
+                            </div>
+                            <div id="location-data" class="row"></div>
+                        </div>
+                        
+                        <!-- Help text for location selection -->
+                        <div class="text-center mt-3">
+                            <p class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i> Click on the map to select your farm location
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Soil Information Card -->
+            <div class="col-lg-6">
+                <div class="card fade-in">
+                    <div class="card-header bg-primary text-white">
+                        <h4><i class="fas fa-flask me-2"></i>Soil Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="crop-form" action="/predict" method="post">
+                            <!-- Soil Properties Section -->
+                            <div class="mb-3">
+                                <h5 class="mb-3"><i class="fas fa-flask me-2"></i>Soil Properties</h5>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="auto-soil-toggle" checked>
+                                    <label class="form-check-label" for="auto-soil-toggle">
+                                        Auto-detect soil properties based on location
+                                    </label>
+                                    <small class="d-block text-muted mt-1">Uncheck to manually enter soil properties</small>
+                                </div>
+                            </div>
+
+                            <div id="soil-properties-manual" class="soil-properties-section">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="soil_ph" class="form-label">Soil pH</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-vial"></i></span>
+                                            <input type="number" step="0.1" class="form-control" id="soil_ph" name="soil_ph" required min="0" max="14" placeholder="6.5">
+                                        </div>
+                                        <small class="text-muted">Typical range: 5.5 - 7.5</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="nitrogen" class="form-label">Nitrogen (N)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">N</span>
+                                            <input type="number" class="form-control" id="nitrogen" name="nitrogen" required min="0" max="200" placeholder="40">
+                                        </div>
+                                        <small class="text-muted">Measured in kg/ha</small>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="phosphorus" class="form-label">Phosphorus (P)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">P</span>
+                                            <input type="number" class="form-control" id="phosphorus" name="phosphorus" required min="0" max="200" placeholder="30">
+                                        </div>
+                                        <small class="text-muted">Measured in kg/ha</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="potassium" class="form-label">Potassium (K)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">K</span>
+                                            <input type="number" class="form-control" id="potassium" name="potassium" required min="0" max="600" placeholder="40">
+                                        </div>
+                                        <small class="text-muted">Measured in kg/ha</small>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="organic_matter" class="form-label">Organic Matter (%)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-leaf"></i></span>
+                                            <input type="number" step="0.1" class="form-control" id="organic_matter" name="organic_matter" required min="0" max="10" placeholder="2.5">
+                                        </div>
+                                        <small class="text-muted">Typical range: 1% - 5%</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="soil_type" class="form-label">Soil Type</label>
+                                        <select class="form-select" id="soil_type" name="soil_type" required>
+                                            <option value="" selected disabled>Select soil type</option>
+                                            <option value="Clay">Clay</option>
+                                            <option value="Loam">Loam</option>
+                                            <option value="Sandy">Sandy</option>
+                                            <option value="Silt">Silt</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Region and Elevation (will be filled automatically or manually) -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="region" class="form-label">Region Type</label>
+                                    <select class="form-select" id="region" name="region" required>
+                                        <option value="" selected disabled>Select region type</option>
+                                        <option value="Arid">Arid</option>
+                                        <option value="Temperate">Temperate</option>
+                                        <option value="Tropical">Tropical</option>
+                                        <option value="Subtropical">Subtropical</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="elevation" class="form-label">Elevation (m)</label>
+                                    <input type="number" class="form-control" id="elevation" name="elevation" required min="0" max="5000" placeholder="100">
+                                </div>
+                            </div>
+
+                            <!-- Hidden fields for weather data -->
+                            <input type="hidden" id="rainfall" name="rainfall" value="0">
+                            <input type="hidden" id="temperature" name="temperature" value="0">
+                            <input type="hidden" id="humidity" name="humidity" value="0">
+                            <input type="hidden" id="sunlight" name="sunlight" value="0">
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-success btn-lg" id="predict-button" disabled>
+                                    <i class="fas fa-seedling me-2"></i>Get Crop Recommendations
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Information Section -->
+        <div class="row mt-4 mb-5">
+            <div class="col-12">
+                <div class="card fade-in">
+                    <div class="card-header bg-info text-white">
+                        <h4><i class="fas fa-info-circle me-2"></i>How It Works</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="p-3">
+                                    <i class="fas fa-map-marked-alt fa-3x mb-3 text-primary"></i>
+                                    <h5>1. Select Location</h5>
+                                    <p>Click on the map or search for your location to automatically fetch weather and elevation data.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="p-3">
+                                    <i class="fas fa-flask fa-3x mb-3 text-primary"></i>
+                                    <h5>2. Enter Soil Data</h5>
+                                    <p>Input your soil characteristics including pH, nutrients, and soil type.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="p-3">
+                                    <i class="fas fa-seedling fa-3x mb-3 text-primary"></i>
+                                    <h5>3. Get Recommendations</h5>
+                                    <p>Our AI model will analyze your data and suggest the best crops for your conditions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Expert Video Section -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="card fade-in">
+                    <div class="card-header bg-success text-white">
+                        <h4><i class="fas fa-video me-2"></i>Learn About Soil Testing from Experts</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 mb-4 mb-lg-0">
+                                <div class="ratio ratio-16x9">
+                                    <iframe src="https://www.youtube.com/embed/3YoXOT3vtbw" title="Soil Testing Methods for Indian Farmers" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <h5 class="mb-3">Soil Testing Methods for Indian Farmers</h5>
+                                <p>Learn how to test your soil using methods specifically developed for Indian agricultural conditions. This comprehensive guide demonstrates practical soil testing techniques that can be performed with minimal equipment, helping you understand your soil's composition and nutrient levels.</p>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-lightbulb me-2"></i>
+                                    <strong>Expert Tip:</strong> Regular soil testing is crucial for optimizing fertilizer use, improving crop yields, and maintaining soil health over time.
+                                </div>
+                                <div class="mt-3">
+                                    <h6><i class="fas fa-check-circle me-2 text-success"></i>Key Benefits of Soil Testing:</h6>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><i class="fas fa-angle-right me-2 text-success"></i>Determine exact nutrient requirements</li>
+                                        <li class="list-group-item"><i class="fas fa-angle-right me-2 text-success"></i>Reduce fertilizer waste and costs</li>
+                                        <li class="list-group-item"><i class="fas fa-angle-right me-2 text-success"></i>Improve crop quality and yield</li>
+                                        <li class="list-group-item"><i class="fas fa-angle-right me-2 text-success"></i>Identify soil health issues early</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-seedling me-2"></i>Smart Crop Recommendation System</h5>
+                    <p>Helping farmers make data-driven decisions for optimal crop selection.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-white text-decoration-none"><i class="fas fa-home me-2"></i>Home</a></li>
+                        <li><a href="/about-model" class="text-white text-decoration-none"><i class="fas fa-brain me-2"></i>About the Model</a></li>
+                        <li><a href="#" data-bs-toggle="modal" data-bs-target="#contactModal" class="text-white text-decoration-none"><i class="fas fa-envelope me-2"></i>Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <p>Developed at IIIT Agartala</p>
+                    <p>Powered by machine learning and agricultural science</p>
+                    <p class="mb-0"><small>&copy; 2023 Smart Crop Recommendation System</small></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Spinner Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-success mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 id="loading-message">Processing your data...</h5>
+                    <p class="text-muted">This may take a few moments</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contact Modal -->
+    <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="contactModalLabel"><i class="fas fa-envelope me-2"></i>Contact Us</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="contact-form">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <select class="form-select" id="subject" required>
+                                <option value="" selected disabled>Select a subject</option>
+                                <option value="question">Question about the system</option>
+                                <option value="feedback">Feedback</option>
+                                <option value="report">Report an issue</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" rows="4" required></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success" id="send-message">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                            </button>
+                        </div>
+                    </form>
+                    <div id="contact-success" class="alert alert-success mt-3 d-none">
+                        <i class="fas fa-check-circle me-2"></i>Your message has been sent successfully! We'll get back to you soon.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

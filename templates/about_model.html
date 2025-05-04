@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About CropX Model - Smart Crop Recommendation System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Model styles */
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #2e7d32;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+        }
+        .timeline-container {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -13px;
+            background-color: white;
+            border: 4px solid #2e7d32;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .left {
+            left: 0;
+        }
+        .right {
+            left: 50%;
+        }
+        .left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid #f1f8e9;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #f1f8e9;
+        }
+        .right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid #f1f8e9;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #f1f8e9 transparent transparent;
+        }
+        .right::after {
+            left: -12px;
+        }
+        .timeline-content {
+            padding: 20px 30px;
+            background-color: #f1f8e9;
+            position: relative;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .section-heading {
+            color: #2e7d32;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .content-block {
+            margin-bottom: 25px;
+        }
+        @media screen and (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
+            }
+            .timeline-container {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-container::before {
+                left: 60px;
+                border: medium solid #f1f8e9;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent #f1f8e9 transparent transparent;
+            }
+            .left::after, .right::after {
+                left: 18px;
+            }
+            .right {
+                left: 0%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="site-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1><i class="fas fa-brain me-2"></i>About the CropX v2 Model</h1>
+                    <p class="lead">Understanding the technology behind our advanced crop recommendation system</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container my-5">
+        <!-- Introduction Section -->
+        <div class="row mb-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="card fade-in">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="mb-0"><i class="fas fa-info-circle me-2"></i>Introduction to CropX v2</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="lead">CropX v2 is an enhanced deep learning model designed to provide highly accurate crop recommendations based on soil and environmental parameters.</p>
+                                <p>This improved version is trained on the comprehensive crop_data_10kv2 dataset with 10,000 samples and supports a wider variety of crops. The model uses a sophisticated three-branch neural network architecture to analyze multiple input features and predict the most suitable crops for given conditions.</p>
+                                <div class="alert alert-success">
+                                    <i class="fas fa-lightbulb me-2"></i>
+                                    <strong>Key Innovation:</strong> CropX v2 combines traditional agricultural knowledge with advanced deep learning techniques to create a powerful and more accurate decision support system for farmers.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Architecture Section -->
+        <div class="row mb-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="card fade-in">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0"><i class="fas fa-project-diagram me-2"></i>Model Architecture</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-primary mb-4">
+                            <i class="fas fa-project-diagram me-2"></i>
+                            <strong>Architecture Overview:</strong> CropX v2 utilizes an enhanced three-branch neural network design with specialized pathways for different types of agricultural data, optimized for even more accurate crop recommendations.
+                        </div>
+                        
+                        <h4 class="mb-3">CropX v2: Advanced Multi-Branch Neural Network</h4>
+                        <p>CropX v2 is an improved deep learning model specifically designed for crop recommendation. It uses a custom three-branch neural network architecture that processes different types of input features separately before combining them for optimal prediction accuracy. The model has been enhanced to handle a larger dataset with more crop varieties.</p>
+                        
+                        <div class="alert alert-info mb-4">
+                            <i class="fas fa-chart-line me-2"></i>
+                            <strong>Performance Highlight:</strong> The CropX v2 model is trained on the comprehensive crop_data_10kv2 dataset with 10,000 samples, making it more robust and reliable for real-world agricultural applications across diverse regions and crop types.
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-header bg-success text-white">
+                                        <h5 class="mb-0">Deep Branch</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-success"></i>Processes soil chemical properties and primary features</li>
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-success"></i>512→256 neurons with ReLU activation</li>
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-success"></i>Batch normalization for training stability</li>
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-success"></i>Dropout (30%) to prevent overfitting</li>
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-success"></i>Specialized for extracting complex patterns from numerical data</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0">Wide Branch</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-primary"></i>Handles environmental and geographical data</li>
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-primary"></i>768 neurons with ReLU activation</li>
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-primary"></i>Batch normalization for consistent learning</li>
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-primary"></i>Heavier dropout (40%) for robust feature learning</li>
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-primary"></i>Captures broader patterns in climate and categorical data</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100">
+                                    <div class="card-header bg-info text-white">
+                                        <h5 class="mb-0">Direct Branch</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-info"></i>Processes simpler patterns directly</li>
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-info"></i>128 neurons with ReLU activation</li>
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-info"></i>Batch normalization for stable training</li>
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-info"></i>Lighter dropout (20%) for feature preservation</li>
+                                            <li class="list-group-item"><i class="fas fa-angle-right me-2 text-info"></i>Captures direct relationships between features and crops</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mb-3">Advanced Architecture Details</h4>
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header bg-dark text-white">
+                                        <h5 class="mb-0">Model Structure & Training</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Component</th>
+                                                        <th>Details</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><strong>Total Parameters</strong></td>
+                                                        <td>143,314 parameters (559.82 KB)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Trainable Parameters</strong></td>
+                                                        <td>141,138 parameters (551.32 KB)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Non-trainable Parameters</strong></td>
+                                                        <td>2,176 parameters (8.50 KB) - Batch normalization moving statistics</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Merged Layer</strong></td>
+                                                        <td>Concatenation of both branches (640 neurons)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Final Dense Layers</strong></td>
+                                                        <td>128 → 64 neurons with batch normalization and dropout</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Output Layer</strong></td>
+                                                        <td>18 neurons (one per crop class) with softmax activation</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Loss Function</strong></td>
+                                                        <td>Sparse Categorical Crossentropy</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Optimizer</strong></td>
+                                                        <td>Adam with 0.001 learning rate</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Training Time</strong></td>
+                                                        <td>~53 seconds on GPU-accelerated hardware</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mb-3">Feature Processing</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header bg-info text-white">
+                                        <h5 class="mb-0">Input Features</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item"><strong>Soil Properties:</strong> pH, Nitrogen (N), Phosphorus (P), Potassium (K), organic matter</li>
+                                            <li class="list-group-item"><strong>Environmental:</strong> rainfall (mm), temperature (°C), humidity (%), sunlight (hours)</li>
+                                            <li class="list-group-item"><strong>Geographical:</strong> region type, elevation (m)</li>
+                                            <li class="list-group-item"><strong>Categorical:</strong> soil type (e.g., Loam, Clay, Sandy)</li>
+                                            <li class="list-group-item"><strong>Preprocessing:</strong> Numerical features standardized, categorical features one-hot encoded</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h5 class="mb-0">Output & Prediction</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item"><strong>Crop Classes:</strong> 18 different crops including major staples and specialty crops</li>
+                                            <li class="list-group-item"><strong>Prediction Method:</strong> Softmax activation providing probability distribution</li>
+                                            <li class="list-group-item"><strong>Output Format:</strong> Top 3 recommended crops with confidence percentages</li>
+                                            <li class="list-group-item"><strong>Early Stopping:</strong> Model training optimized with patience of 15 epochs</li>
+                                            <li class="list-group-item"><strong>Adaptive Learning:</strong> Learning rate reduction on plateau for optimal convergence</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Development Process Section -->
+        <div class="row mb-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="card fade-in">
+                    <div class="card-header bg-info text-white">
+                        <h3 class="mb-0"><i class="fas fa-code me-2"></i>Development Process</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            <div class="timeline-container left">
+                                <div class="timeline-content">
+                                    <h4>Research Phase</h4>
+                                    <p><strong>Duration:</strong> 2 months</p>
+                                    <p>Extensive research on agricultural factors affecting crop growth and existing crop recommendation systems. Literature review of machine learning applications in agriculture.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-container right">
+                                <div class="timeline-content">
+                                    <h4>Data Collection</h4>
+                                    <p><strong>Duration:</strong> 1.5 months</p>
+                                    <p>Gathered comprehensive dataset containing soil parameters, climate data, and suitable crops from agricultural research institutes and government databases.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-container left">
+                                <div class="timeline-content">
+                                    <h4>Data Preprocessing</h4>
+                                    <p><strong>Duration:</strong> 3 weeks</p>
+                                    <p>Cleaned the dataset, handled missing values, normalized numerical features, and encoded categorical variables to prepare for model training.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-container right">
+                                <div class="timeline-content">
+                                    <h4>Model Development</h4>
+                                    <p><strong>Duration:</strong> 2 months</p>
+                                    <p>Designed and implemented the multi-branch neural network architecture. Experimented with different architectures and hyperparameters to optimize performance.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-container left">
+                                <div class="timeline-content">
+                                    <h4>Testing & Validation</h4>
+                                    <p><strong>Duration:</strong> 1 month</p>
+                                    <p>Evaluated model performance using train-test split (80/20) with stratification. Achieved an exceptional 99.25% accuracy on the test dataset, significantly outperforming baseline models and traditional machine learning approaches.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-container right">
+                                <div class="timeline-content">
+                                    <h4>Web Application Development</h4>
+                                    <p><strong>Duration:</strong> 1.5 months</p>
+                                    <p>Created an intuitive web interface using Flask and modern front-end technologies. Integrated external APIs for weather and location data.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Features Section -->
+        <div class="row mb-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="card fade-in">
+                    <div class="card-header bg-warning text-dark">
+                        <h3 class="mb-0"><i class="fas fa-star me-2"></i>Key Features & Innovations</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 border-success">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-brain fa-3x text-success mb-3"></i>
+                                        <h4>Multi-Branch Architecture</h4>
+                                        <p>Specialized processing paths for different types of input features, allowing the model to learn complex relationships.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 border-primary">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-balance-scale fa-3x text-primary mb-3"></i>
+                                        <h4>Balanced Training</h4>
+                                        <p>Advanced techniques to handle class imbalance in the training data, ensuring fair representation of all crop types.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 border-info">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-cloud-sun-rain fa-3x text-info mb-3"></i>
+                                        <h4>Climate Integration</h4>
+                                        <p>Real-time weather data integration to provide recommendations based on current environmental conditions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 border-danger">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-map-marked-alt fa-3x text-danger mb-3"></i>
+                                        <h4>Geolocation Support</h4>
+                                        <p>Automatic detection of user's location to fetch relevant climate and elevation data for more accurate predictions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 border-warning">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-chart-bar fa-3x text-warning mb-3"></i>
+                                        <h4>Probability Ranking</h4>
+                                        <p>Provides multiple crop recommendations with confidence scores, allowing farmers to make informed decisions.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 border-dark">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-mobile-alt fa-3x text-dark mb-3"></i>
+                                        <h4>Responsive Design</h4>
+                                        <p>Fully responsive web interface that works seamlessly on desktops, tablets, and mobile devices for field use.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div class="row mb-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="card fade-in">
+                    <div class="card-header bg-dark text-white">
+                        <h3 class="mb-0"><i class="fas fa-info-circle me-2"></i>Project Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="lead text-center mb-4">This project was developed at the Computer Science & Engineering Department at IIIT Agartala as part of a final year project.</p>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-success text-white">
+                                        <h5 class="mb-0"><i class="fas fa-database me-2"></i>Dataset Information</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item"><strong>Dataset Size:</strong> 10,010 samples</li>
+                                            <li class="list-group-item"><strong>Features:</strong> 12 input features (10 numerical, 2 categorical)</li>
+                                            <li class="list-group-item"><strong>Crop Classes:</strong> 18 different crop types</li>
+                                            <li class="list-group-item"><strong>Class Distribution:</strong> Major crops (e.g., Soybean, Rice, Cotton) with 1,200+ samples each</li>
+                                            <li class="list-group-item"><strong>Data Split:</strong> 80% training (8,008 samples), 20% testing (2,002 samples)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Performance Metrics</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item"><strong>Overall Accuracy:</strong> 99.25% on test data</li>
+                                            <li class="list-group-item"><strong>Training Time:</strong> ~53 seconds on GPU hardware</li>
+                                            <li class="list-group-item"><strong>Model Size:</strong> 559.82 KB (143,314 parameters)</li>
+                                            <li class="list-group-item"><strong>Inference Speed:</strong> Real-time predictions (milliseconds)</li>
+                                            <li class="list-group-item"><strong>Deployment:</strong> Web-based interface with API endpoints for integration</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-graduation-cap me-2"></i>
+                            <strong>Academic Contribution:</strong> This project demonstrates how deep learning can be effectively applied to agricultural decision support systems, potentially increasing crop yields and optimizing resource utilization.
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <p>Under the guidance of the Department of Computer Science & Engineering, IIIT Agartala</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back to Home Button -->
+        <div class="row mb-5">
+            <div class="col-lg-10 mx-auto text-center">
+                <a href="/" class="btn btn-success btn-lg">
+                    <i class="fas fa-home me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-seedling me-2"></i>Smart Crop Recommendation System</h5>
+                    <p>Helping farmers make data-driven decisions for optimal crop selection.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>Developed at IIIT Agartala</p>
+                    <p class="mb-0"><small>&copy; 2025 Smart Crop Recommendation System</small></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Initialize animations when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation effects to cards
+            const animateCards = () => {
+                const cards = document.querySelectorAll('.fade-in');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100 * index);
+                });
+            };
+            
+            // Initialize animations
+            animateCards();
+        });
+    </script>
+</body>
+</html>

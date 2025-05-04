@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Recommendation Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="fas fa-seedling me-2"></i>CropX</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about-model"><i class="fas fa-brain me-1"></i>About the Model</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#contactModal"><i class="fas fa-envelope me-1"></i>Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="site-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1><i class="fas fa-seedling me-2"></i>Your Crop Recommendations</h1>
+                    <p class="lead">Based on your soil conditions and local climate data</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Main Results Card -->
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="card fade-in mb-5">
+                    <div class="card-header bg-success text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0"><i class="fas fa-award me-2"></i>Top Recommendation: {{ recommendations[0].crop }}</h3>
+                            <span class="badge bg-light text-success fs-6">{{ recommendations[0].probability }}</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <!-- Recommendations Column -->
+                            <div class="col-md-6 mb-4 mb-md-0">
+                                <div class="p-3 rounded" style="background-color: rgba(46, 125, 50, 0.05);">
+                                    <h4 class="mb-3"><i class="fas fa-leaf me-2"></i>Top Crop Recommendations</h4>
+                                    <ul class="list-group mb-4">
+                                        {% for rec in recommendations %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fas fa-seedling me-2 {% if loop.index == 1 %}text-success{% elif loop.index == 2 %}text-primary{% else %}text-info{% endif %}"></i>
+                                                <span class="fw-medium">{{ rec.crop }}</span>
+                                            </div>
+                                            <span class="badge {% if loop.index == 1 %}bg-success{% elif loop.index == 2 %}bg-primary{% else %}bg-info{% endif %} rounded-pill">{{ rec.probability }}</span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <span>These recommendations are based on our AI model's analysis of your soil and climate data.</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Input Parameters Column -->
+                            <div class="col-md-6">
+                                <div class="p-3 rounded" style="background-color: rgba(21, 101, 192, 0.05);">
+                                    <h4 class="mb-3"><i class="fas fa-clipboard-list me-2"></i>Your Input Parameters</h4>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="card border-0 shadow-sm">
+                                                <div class="card-header bg-primary text-white py-2">
+                                                    <h5 class="mb-0"><i class="fas fa-flask me-2"></i>Soil Properties</h5>
+                                                </div>
+                                                <div class="card-body p-0">
+                                                    <table class="table table-hover mb-0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <th>Soil pH</th>
+                                                                <td>{{ input_data['Soil pH'] }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Nitrogen (N)</th>
+                                                                <td>{{ input_data['Nitrogen (N)'] }} kg/ha</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Phosphorus (P)</th>
+                                                                <td>{{ input_data['Phosphorus (P)'] }} kg/ha</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Potassium (K)</th>
+                                                                <td>{{ input_data['Potassium (K)'] }} kg/ha</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Organic Matter</th>
+                                                                <td>{{ input_data['Organic Matter (%)'] }}%</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Soil Type</th>
+                                                                <td>{{ input_data['Soil Type'] }}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card border-0 shadow-sm">
+                                                <div class="card-header bg-info text-white py-2">
+                                                    <h5 class="mb-0"><i class="fas fa-cloud-sun me-2"></i>Climate & Location</h5>
+                                                </div>
+                                                <div class="card-body p-0">
+                                                    <table class="table table-hover mb-0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <th>Rainfall</th>
+                                                                <td>{{ input_data['Rainfall (mm)'] }} mm</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Temperature</th>
+                                                                <td>{{ input_data['Temperature (°C)'] }}°C</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Humidity</th>
+                                                                <td>{{ input_data['Humidity (%)'] }}%</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Sunlight</th>
+                                                                <td>{{ input_data['Sunlight (hours)'] }} hours</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Region</th>
+                                                                <td>{{ input_data['Region'] }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Elevation</th>
+                                                                <td>{{ input_data['Elevation (m)'] }} m</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer p-3">
+                        <div class="row">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <div class="d-grid">
+                                    <a href="/" class="btn btn-primary">
+                                        <i class="fas fa-redo me-2"></i>Try Another Prediction
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-grid">
+                                    <button class="btn btn-outline-success" onclick="window.print()">
+                                        <i class="fas fa-print me-2"></i>Print Results
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Additional Information -->
+        <div class="row mb-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="card fade-in">
+                    <div class="card-header bg-secondary text-white">
+                        <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>What's Next?</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="p-3">
+                                    <i class="fas fa-book fa-3x mb-3 text-primary"></i>
+                                    <h5>Learn More</h5>
+                                    <p>Research best practices for growing your recommended crops in your specific conditions.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="p-3">
+                                    <i class="fas fa-calendar-alt fa-3x mb-3 text-primary"></i>
+                                    <h5>Plan Your Season</h5>
+                                    <p>Create a planting schedule based on your local climate and the crops you've selected.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="p-3">
+                                    <i class="fas fa-tools fa-3x mb-3 text-primary"></i>
+                                    <h5>Prepare Your Soil</h5>
+                                    <p>Consider soil amendments based on your soil test results to optimize for your chosen crops.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-seedling me-2"></i>Smart Crop Recommendation System</h5>
+                    <p>Helping farmers make data-driven decisions for optimal crop selection.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-white text-decoration-none"><i class="fas fa-home me-2"></i>Home</a></li>
+                        <li><a href="/about-model" class="text-white text-decoration-none"><i class="fas fa-brain me-2"></i>About the Model</a></li>
+                        <li><a href="#" data-bs-toggle="modal" data-bs-target="#contactModal" class="text-white text-decoration-none"><i class="fas fa-envelope me-2"></i>Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <p>Developed at IIIT Agartala</p>
+                    <p>Powered by machine learning and agricultural science</p>
+                    <p class="mb-0"><small>&copy; 2023 Smart Crop Recommendation System</small></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Contact Modal -->
+    <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="contactModalLabel"><i class="fas fa-envelope me-2"></i>Contact Us</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="contact-form">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <select class="form-select" id="subject" required>
+                                <option value="" selected disabled>Select a subject</option>
+                                <option value="question">Question about the system</option>
+                                <option value="feedback">Feedback</option>
+                                <option value="report">Report an issue</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" rows="4" required></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success" id="send-message">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                            </button>
+                        </div>
+                    </form>
+                    <div id="contact-success" class="alert alert-success mt-3 d-none">
+                        <i class="fas fa-check-circle me-2"></i>Your message has been sent successfully! We'll get back to you soon.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
